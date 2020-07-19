@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        width: 100%;
+        position: relative;
+
+    }
+
+    .big_box {
+        margin-top: 30px;
+        width: 60%;
+        border: 1px solid #cccccc;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        overflow: hidden;
+        clear: both;
+        box-shadow: 5px 5px 5px 0 rgba(116, 107, 107, 0.1);
+        -webkit-box-shadow: #d4d2d2 0px 0px 10px;
+        -moz-box-shadow: #d4d2d2 0px 0px 10px;
+
+    }
+
+    .big_box .first_box,
+    .big_box .second_box {
+        border-bottom: 1px solid rgba(116, 107, 107, 0.2);
+        width: 100%;
+        padding: 0px 20px;
+        box-sizing: border-box;
+        overflow: hidden;
+        clear: both;
+    }
+
+    .first_box .line_one,
+    .second_box .line_one {
+        padding: 30px 0px 10px 0px;
+        box-sizing: border-box;
+    }
+
+    .first_box .line_two input,
+    .second_box .line_two input {
+        border-top: 0px;
+        border-left: 0px;
+        border-right: 0px;
+        border-bottom: 1px solid #cccccc;
+        padding-bottom: 10px;
+        display: inline-block;
+        width: 100%;
+        margin-bottom: 15px;
+        outline: none;
+        padding-left: 8px;
+        box-sizing: border-box;
+    }
+
+    .first_box .line_three button,
+    .second_box .line_four button {
+        padding: 5px 30px;
+        background-color: #008B8B;
+        border: none;
+        border-radius: 3px;
+        color: #ffffff;
+        margin-bottom: 30px;
+    }
+
+    .second_box .line_four button {
+        background-color: #332233;
+        margin-top: 10px;
+    }
+
+    .second_box .line_three ul {
+        list-style: none;
+        border: 1px solid #cccccc;
+        border-radius: 3px;
+        border-bottom: 0px;
+    }
+
+    .second_box .line_three ul li {
+        padding: 8px 0px 8px 10px;
+        border-bottom: 1px solid #cccccc;
+        position: relative;
+    }
+
+    .second_box .line_three ul li img {
+        width: 16px;
+        height: 16px;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        right: 20px;
+        cursor: pointer;
+    }
+
+    button {
+        cursor: pointer;
+    }
+
+    .second_box .line_two {
+        position: relative;
+    }
+
+    #clearBtn {
+        width: 16px;
+        height: 16px;
+        position: absolute;
+        right: 10px;
+        bottom: 28px;
+        display: none;
+        cursor: pointer;
+    }
+</style>
+
+<body>
+    <!-- big box -->
+    <div class="big_box">
+        <div class="first_box">
+            <div class="line_one">
+                <h2>任务清单</h2>
+            </div>
+            <div class="line_two"><input type="text" name="" placeholder="新的任务" id="input_text"></div>
+            <div class="line_three"><button id="submit_btn">添加任务</button></div>
+        </div>
+        <div class="second_box">
+            <div class="line_one">
+                <h2>我的任务</h2>
+            </div>
+            <div class="line_two"><input type="text" name="" placeholder="筛选任务" id="filter_text"><img src="clearBtn.png"
+                    alt="" id="clearBtn"></div>
+            <div class="line_three">
+                <ul id="taskUi">
+                    <!-- <li>任务1<img src="deleteIcon.png" alt="" class="delete_item"></li>
+                    <li>任务2<img src="deleteIcon.png" alt="" class="delete_item"></li> -->
+                </ul>
+            </div>
+            <div class="line_four"><button id="clear_btn">清除任务</button></div>
+        </div>
+    </div>
+</body>
+<script>
+    const add_text = document.getElementById("input_text");
+    const submit_btn = document.getElementById("submit_btn");
+    const filter_text = document.getElementById("filter_text");
+    const clear_btn = document.getElementById("clear_btn");
+    const taskUi = document.getElementById("taskUi");
+
+    start_listen();
+
+    function start_listen() {
+        //添加li----表单事件
+        submit_btn.addEventListener('click', addTask);
+        //   //删除单个li----鼠标事件
+        taskUi.addEventListener('click', removeTask);
+        //   //清除所有任务----鼠标事件
+        clear_btn.addEventListener('click', clearAllTask);
+        //   //筛选----按键事件
+        filter_text.addEventListener('keyup', filterTask);
+    }
+
+
+    //添加任务
+    function addTask(e) {
+        //  输入的内容
+        const newTask = add_text.value;
+        if (newTask != "") {
+            //1、生成li
+            let li = document.createElement('li')
+            li.className = 'collection_item'
+            li.innerHTML = `${newTask}<img src="deleteIcon.png" alt="" class="delete_item">`
+            taskUi.prepend(li)
+            //防止刷新
+            e.preventDefault();
+            add_text.value = ''
+        }else{
+            alert("请输入内容！")
+        }
+
+    }
+    //删除单个任务
+    function removeTask(e) {
+        if (e.target && e.target.nodeName == 'IMG') {
+            e.target.parentNode.remove();
+        }
+    }
+
+    //删除所有任务
+    function clearAllTask() {
+        taskUi.innerHTML = ''
+    }
+
+    //筛选任务
+    function filterTask(e) {
+        const input_txt = e.target.value;
+        document.querySelectorAll('.collection_item').forEach(function (taskLi) {
+            const item = taskLi.firstChild.textContent;
+            // console.log(taskLi.firstChild)
+            if (item.indexOf(input_txt) != -1) {
+                //如果包含
+                taskLi.style.display = 'block'
+            } else {
+                //如果不包含
+                taskLi.style.display = 'none'
+            }
+        })
+
+        //清除内容按钮
+        // console.log(e.target.nextElementSibling)
+        const imgBtn = document.getElementById('clearBtn');
+        if (input_txt != '' || input_txt != 'undefind' || input_txt != NaN) {
+            imgBtn.style.display = 'block';
+            imgBtn.addEventListener('click', function clearBtn(e) {
+                filter_text.value = '';
+                imgBtn.style.display = 'none';
+            })
+        }
+        if(input_txt == '' || input_txt == 'undefind'){
+            imgBtn.style.display = 'none';
+        }
+
+    }
+
+</script>
+
+</html>
