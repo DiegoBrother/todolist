@@ -128,14 +128,15 @@
             <div class="line_one">
                 <h2>任务清单</h2>
             </div>
-            <div class="line_two"><input type="text" name="" placeholder="新的任务" id="input_text"></div>
+            <div class="line_two"><input type="text" name="" placeholder="新的任务" id="input_text"
+                    onkeydown="return banInputSapce(event)"></div>
             <div class="line_three"><button id="submit_btn">添加任务</button></div>
         </div>
         <div class="second_box">
             <div class="line_one">
                 <h2>我的任务</h2>
             </div>
-            <div class="line_two"><input type="text" name="" placeholder="筛选任务" id="filter_text"><img src="clearBtn.png"
+            <div class="line_two"><input type="text" name="" placeholder="筛选任务" id="filter_text" onkeydown="return banInputSapce(event)"><img src="clearBtn.png"
                     alt="" id="clearBtn"></div>
             <div class="line_three">
                 <ul id="taskUi">
@@ -181,7 +182,7 @@
             //防止刷新
             e.preventDefault();
             add_text.value = ''
-        }else{
+        } else {
             alert("请输入内容！")
         }
 
@@ -223,10 +224,21 @@
                 imgBtn.style.display = 'none';
             })
         }
-        if(input_txt == '' || input_txt == 'undefind'){
+        if (input_txt == '' || input_txt == 'undefind') {
             imgBtn.style.display = 'none';
         }
+    }
 
+    function banInputSapce(e) {
+        var keynum;
+        if (window.event) {
+            keynum = e.keyCode
+        } else if (e.which) {
+            keynum = e.which
+        } if (keynum == 32) {
+            return false;
+        }
+        return true;
     }
 
 </script>
